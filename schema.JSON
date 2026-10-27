@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AirlineOperationsDataModel",
+  "description": "Modelo de datos para el Dashboard Operativo de Aerolínea Virtual",
+  "type": "object",
+  "properties": {
+    "agentes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "full_name": { "type": "string" },
+          "role": { "type": "string", "enum": ["checkin_agent", "gate_agent", "supervisor"] },
+          "email": { "type": "string" },
+          "avatar_url": { "type": "string" },
+          "assigned_flight_id": { "type": ["string", "null"] },
+          "location": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "busy", "on_break"] }
+        },
+        "required": ["id", "full_name", "role", "status"]
+      }
+    },
+    "pasajeros": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "full_name": { "type": "string" },
+          "document_type": { "type": "string", "enum": ["CC", "CE", "PASAPORTE"] },
+          "document_number": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "frequent_flyer_tier": { "type": "string", "enum": ["General", "Silver", "Gold", "Platinum"] }
+        },
+        "required": ["id", "full_name", "document_type", "document_number"]
+      }
+    },
+    "vuelos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "flight_number": { "type": "string" },
+          "airline": { "type": "string" },
+          "origin": { "type": "string" },
+          "destination": { "type": "string" },
+          "origin_city": { "type": "string" },
+          "destination_city": { "type": "string" },
+          "departure_time": { "type": "string" },
+          "arrival_time": { "type": "string" },
+          "duration": { "type": "string" },
+          "gate": { "type": "string" },
+          "counter": { "type": "string" },
+          "capacity": { "type": "number" },
+          "status": { "type": "string", "enum": ["scheduled", "boarding", "delayed", "departed"] },
+          "assigned_checkin_agent_id": { "type": ["string", "null"] },
+          "assigned_gate_agent_id": { "type": ["string", "null"] }
+        },
+        "required": ["id", "flight_number", "origin", "destination", "departure_time", "arrival_time", "status"]
+      }
+    },
+    "reservas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "pnr": { "type": "string" },
+          "passenger_id": { "type": "string" },
+          "flight_id": { "type": "string" },
+          "amount": { "type": "number" },
+          "currency": { "type": "string", "enum": ["COP"] },
+          "cabin_class": { "type": "string", "enum": ["Economy", "Business", "Premium"] },
+          "booking_channel": { "type": "string", "enum": ["web", "app", "agent"] },
+          "agent_id": { "type": ["string", "null"] },
+          "status": { "type": "string", "enum": ["paid", "payment_rejected", "expired", "seat_held"] },
+          "stage": { "type": "string", "enum": ["Búsqueda", "Cupo bloqueado", "Pago en autorización", "Tiquete emitido", "Venta no concretada"] },
+          "payment_gateway": { "type": "string" },
+          "created_at": { "type": "string" }
+        },
+        "required": ["id", "pnr", "passenger_id", "flight_id", "amount", "currency", "status", "stage", "booking_channel", "created_at"]
+      }
+    },
+    "checkins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "booking_id": { "type": "string" },
+          "passenger_id": { "type": "string" },
+          "flight_id": { "type": "string" },
+          "seat": { "type": "string" },
+          "baggage_count": { "type": "number" },
+          "status": { "type": "string", "enum": ["pending", "document_issue", "completed", "not_authorized", "boarded"] },
+          "stage": { "type": "string", "enum": ["Solicitud", "Verificación de documentos", "Equipaje", "Pasabordo emitido", "Control migratorio/seguridad", "Puerta de embarque", "Abordado"] },
+          "security_result": { "type": "string", "enum": ["authorized", "not_authorized", "pending"] },
+          "document_status": { "type": "string", "enum": ["verified", "issue", "pending"] },
+          "assigned_agent_id": { "type": ["string", "null"] },
+          "incident_detail": { "type": ["string", "null"] },
+          "timestamp": { "type": "string" }
+        },
+        "required": ["id", "booking_id", "passenger_id", "flight_id", "seat", "status", "stage", "security_result"]
+      }
+    }
+  }
+}
