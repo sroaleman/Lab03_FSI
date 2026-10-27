@@ -1,0 +1,150 @@
+{
+  "name": "AEROLINE",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ad2186fd-d8a3-41e7-aca4-735f10d13062",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8ecbfea7-6bc2-4b97-acdc-5125a239f629",
+      "name": "Webhook",
+      "webhookId": "ad2186fd-d8a3-41e7-aca4-735f10d13062"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        208
+      ],
+      "id": "b872ec13-78fa-455b-957a-f3397e2c09c6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "aerolinea-dashboard"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        256,
+        208
+      ],
+      "id": "d3994a5a-2fd2-4bab-8760-e68597dfceb0",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"output\": $json.output } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        576,
+        0
+      ],
+      "id": "8b5ba7c7-ec4f-4ea4-989f-be965394fcc3",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Mensaje del usuario: {{ $json.body.message }}\nContexto del dashboard: {{ JSON.stringify($json.body.context) }}",
+        "options": {
+          "systemMessage": " Eres un agente de IA de soporte para el responsable de operaciones de una aerolínea virtual. Ayudas con métricas de dos procesos: (1) reserva y compra de tickets (conversión, pagos rechazados, PNR expirados, ingresos) y (2) check-in y embarque (documentos, equipaje, seguridad migratoria, abordaje). Usa el contexto del dashboard cuando esté disponible. Responde de forma concisa y con recomendaciones accionables."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        288,
+        0
+      ],
+      "id": "fb0ba47b-20a0-4d5b-bf79-0e05570b625d",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f8fd7d2a-7416-429e-aac8-645b870fcb32",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "34edf64ff18264482f782872bdd401887fcbaa42558e92cd21cfa75a08013478"
+  },
+  "nodeGroups": [],
+  "id": "2H9xUvQetNVdpbPx",
+  "tags": []
+}
